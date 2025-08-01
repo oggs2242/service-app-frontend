@@ -11,6 +11,7 @@ function ResetPasswordPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (!user || user.role !== "Administrator") {
@@ -22,6 +23,12 @@ function ResetPasswordPage() {
     e.preventDefault();
     setMessage("");
     setIsError(false);
+
+    if (newPassword.length < 6) {
+      setMessage("La password deve contenere almeno 6 caratteri.");
+      setIsError(true);
+      return;
+    }
 
     if (newPassword !== confirmPassword) {
       setMessage("Le password non corrispondono.");
@@ -44,6 +51,10 @@ function ResetPasswordPage() {
       setMessage(errorMessage);
       setIsError(true);
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -69,27 +80,49 @@ function ResetPasswordPage() {
                 <label htmlFor="newPassword" className="form-label fw-bold">
                   Nuova Password
                 </label>
-                <input
-                  type="password"
-                  className="form-control"
-                  id="newPassword"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  required
-                />
+                <div className="input-group">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    className="form-control"
+                    id="newPassword"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Almeno 6 caratteri"
+                    required
+                  />
+                  <button
+                    className="btn btn-outline-secondary"
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                  >
+                    <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                  </button>
+                </div>
+                <small className="form-text text-muted">
+                    La password deve contenere almeno 6 caratteri.
+                </small>
               </div>
               <div className="mb-3">
                 <label htmlFor="confirmPassword" className="form-label fw-bold">
                   Conferma Nuova Password
                 </label>
-                <input
-                  type="password"
-                  className="form-control"
-                  id="confirmPassword"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                />
+                <div className="input-group">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    className="form-control"
+                    id="confirmPassword"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                  />
+                  <button
+                    className="btn btn-outline-secondary"
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                  >
+                    <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                  </button>
+                </div>
               </div>
               <button type="submit" className="btn btn-primary w-100">
                 Reset Password
